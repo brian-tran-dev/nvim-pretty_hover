@@ -203,12 +203,13 @@ function M.open_float(hover_text, format, config)
 	bufnr, winnr = vim.lsp.util.open_floating_preview(out.text, language, {
 		border = config.border,
 		focusable = true,
-		focus = true,
+		focus = false,
 		focus_id = "pretty-hover",
 		wrap = config.wrap,
 		wrap_at = config.max_width and config.max_width - 2 or nil,
 		max_width = config.max_width,
 		max_height = config.max_height,
+		relative = 'cursor',
 	})
 
 	vim.wo[winnr].foldenable = false
@@ -222,6 +223,18 @@ function M.open_float(hover_text, format, config)
 		silent = true,
 		nowait = true,
 	})
+	vim.keymap.set('n', '<Esc>', M.close_float, {
+		buffer = bufnr,
+		silent = true,
+		nowait = true,
+	})
+	vim.keymap.set('n', '<C-c>', M.close_float, {
+		buffer = bufnr,
+		silent = true,
+		nowait = true,
+	})
+
+	api.nvim_set_current_win(winnr)
 
     return bufnr, winnr
 end
